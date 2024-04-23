@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace crud_api_dnet.Services.CharacterService
 {
     public interface ICharacterService
     {
-        Task<List<Character>> GetAllCharacters();
+        Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters();
+        Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id);
+        Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter);
+        Task<ServiceResponse<GetCharacterDto>> UpdateCharacter(UpdateCharacterDto updatedCharacter);
+        Task<ServiceResponse<List<GetCharacterDto>>> DeleteCharacter(int id);
 
-        Task<Character> GetCharacterById(int id);
 
-        Task<List<Character>> AddCharacter(Character newCharacter);
     }
 }
