@@ -9,9 +9,12 @@ namespace crud_api_dnet.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
-
+ 
         }
         public DbSet<Character> Characters => Set<Character>();
+        public DbSet<User> Users => Set<User>();
+        public DbSet<Skill> Skills => Set<Skill>();
+
     }
 
 } 

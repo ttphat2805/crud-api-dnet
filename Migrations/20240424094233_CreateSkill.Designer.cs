@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using crud_api_dnet.Data;
 
@@ -11,9 +12,11 @@ using crud_api_dnet.Data;
 namespace crud_api_dnet.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240424094233_CreateSkill")]
+    partial class CreateSkill
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,10 +58,15 @@ namespace crud_api_dnet.Migrations
                     b.Property<int>("Strength")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Victories")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Characters");
                 });
@@ -71,10 +79,10 @@ namespace crud_api_dnet.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Damage")
+                    b.Property<int>("CharacterId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("HitPointId")
+                    b.Property<int>("Damage")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -83,7 +91,7 @@ namespace crud_api_dnet.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("HitPointId");
+                    b.HasIndex("CharacterId");
 
                     b.ToTable("Skills");
                 });
@@ -96,9 +104,13 @@ namespace crud_api_dnet.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Password")
+                    b.Property<byte[]>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -109,13 +121,27 @@ namespace crud_api_dnet.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("crud_api_dnet.Models.Character", b =>
+                {
+                    b.HasOne("crud_api_dnet.Models.User", null)
+                        .WithMany("Characters")
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("crud_api_dnet.Models.Skill", b =>
                 {
                     b.HasOne("crud_api_dnet.Models.Character", "Character")
                         .WithMany()
-                        .HasForeignKey("HitPointId");
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Character");
+                });
+
+            modelBuilder.Entity("crud_api_dnet.Models.User", b =>
+                {
+                    b.Navigation("Characters");
                 });
 #pragma warning restore 612, 618
         }

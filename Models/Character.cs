@@ -17,5 +17,6 @@ namespace crud_api_dnet.Models
         public int Fights { get; set; }
         public int Victories { get; set; }
         public int Defeats { get; set; }
+
     }
 }
